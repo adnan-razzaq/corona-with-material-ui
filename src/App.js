@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import CountryPicker from "./components/CountryPicker/CountryPicker";
+import Cards from "./components/Cards/Cards";
+import Charts from "./components/Charts/Charts";
+import styles from "./App.module.css";
+import axios from "axios";
 
-function App() {
+export default function App() {
+  //state for storing overall data
+  const [overAll, setoverAll] = useState({});
+  useEffect(() => {
+    const fetchdata = async function () {
+      const response = await axios.get("https://covid19.mathdro.id/api");
+      const {
+        data: { confirmed, deaths, recovered, lastUpdate },
+      } = response;
+      return { confirmed, recovered, deaths, lastUpdate };
+    };
+    fetchdata().then((data) => setoverAll(data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className={styles.container}>
+        <Cards data={overAll} />
+        <Charts />
+        <CountryPicker />
+      </div>
+    </>
   );
 }
-
-export default App;
