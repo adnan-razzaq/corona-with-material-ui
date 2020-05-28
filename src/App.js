@@ -4,8 +4,15 @@ import Cards from "./components/Cards/Cards";
 import Charts from "./components/Charts/Charts";
 import "./App.css";
 import axios from "axios";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import corona from "./image.png";
 
 export default function App() {
+  const darkTheme = createMuiTheme({
+    palette: {
+      type: "dark",
+    },
+  });
   //state for storing overall data
   const [overAll, setoverAll] = useState({});
   const [country, setcountry] = useState("");
@@ -31,11 +38,14 @@ export default function App() {
 
   return (
     <>
-      <div className="container">
-        <Cards data={overAll} />
-        <CountryPicker handlechange={handlechange} />
-        <Charts alldata={overAll} country={country} />
-      </div>
+      <ThemeProvider theme={darkTheme}>
+        <div className="container">
+          <img className="image" src={corona} alt="" />
+          <Cards data={overAll} />
+          <CountryPicker handlechange={handlechange} />
+          <Charts alldata={overAll} country={country} />
+        </div>
+      </ThemeProvider>
     </>
   );
 }
