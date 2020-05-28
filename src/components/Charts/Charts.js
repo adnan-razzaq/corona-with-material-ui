@@ -3,8 +3,12 @@ import "./chart.css";
 import axios from "axios";
 import { Line, Bar } from "react-chartjs-2";
 
-export default function Charts() {
+export default function Charts({
+  alldata: { confirmed, recovered, deaths },
+  country,
+}) {
   //State for storing daily data
+
   const [dailyData, setdailyData] = useState([]);
   //useeffect for calling api
   useEffect(() => {
@@ -17,14 +21,13 @@ export default function Charts() {
         deaths: item.deaths.total,
         reportDate: item.reportDate,
       }));
-      console.log(modifieddata);
 
       return modifieddata;
     };
     getData().then((data) => setdailyData(data));
   }, []);
 
-  // setting up your chart
+  // setting up your line chart
 
   const data = {
     labels: dailyData.map((date) => date.reportDate),
@@ -54,10 +57,28 @@ export default function Charts() {
       },
     ],
   };
-
+  // setting up your bar data
+  let bardata = {};
+  if (confirmed) {
+    bardata = {
+      labels: ["Infected", "recovered", "deaths"],
+      datasets: [
+        {
+          label: "People",
+          backgroundColor: ["yellow", "green", "red"],
+          borderColor: "rgba(255,99,132,1)",
+          borderWidth: 1,
+          hoverBackgroundColor: "rgba(255,99,132,0.4)",
+          hoverBorderColor: "rgba(255,99,132,1)",
+          data: [confirmed.value, recovered.value, deaths.value],
+        },
+      ],
+    };
+  }
   return (
     <div className="container">
       <Line data={data} />
+      <Bar data={bardata} />
     </div>
   );
 }
